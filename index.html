@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Farmasi Registration</title>
+
+<style>
+* { box-sizing: border-box; }
+
+:root {
+--bg1: #fff1f4;
+--bg2: #ffdce3;
+--primary-dark: #d93d5a;
+--primary-light: #ff8898;
+--text: #2c2430;
+--muted: #6c6771;
+--card-bg: rgba(255,255,255,0.95);
+--border-soft: rgba(217,61,90,0.18);
+--success: #178c45;
+--error: #d73d51;
+--dark-btn: #565d68;
+}
+
+html, body {
+margin: 0;
+min-height: 100%;
+font-family: Arial, sans-serif;
+color: var(--text);
+}
+
+body {
+min-height: 100svh;
+background:
+radial-gradient(circle at 15% 10%, rgba(255,255,255,0.85), transparent 24%),
+radial-gradient(circle at 85% 90%, rgba(255,255,255,0.55), transparent 22%),
+linear-gradient(135deg, var(--bg1), var(--bg2));
+overflow-x: hidden;
+position: relative;
+}
+
+.money-rain {
+position: fixed;
+inset: 0;
+overflow: hidden;
+pointer-events: none;
+z-index: 1;
+}
+
+.note {
+position: absolute;
+top: -220px;
+opacity: 0.9;
+filter: brightness(0.72) contrast(1.18) saturate(0.95) drop-shadow(0 12px 18px rgba(0,0,0,0.35));
+animation-name: stormFall;
+animation-timing-function: linear;
+animation-iteration-count: infinite;
+transform-origin: center center;
+will-change: transform, opacity;
+pointer-events: none;
+user-select: none;
+}
+
+@keyframes stormFall {
+0% {
+transform: translate3d(0, -220px, 0) rotate(0deg);
+opacity: 0;
+}
+8% {
+opacity: 0.92;
+}
+20% {
+transform: translate3d(22px, 18vh, 0) rotate(65deg);
+}
+35% {
+transform: translate3d(-28px, 36vh, 0) rotate(140deg);
+}
+55% {
+transform: translate3d(26px, 62vh, 0) rotate(235deg);
+}
+75% {
+transform: translate3d(-18px, 86vh, 0) rotate(310deg);
+}
+100% {
+transform: translate3d(10px, 125vh, 0) rotate(390deg);
+opacity: 0;
+}
+}
+
+.page-wrap {
+min-height: 100svh;
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 20px 10px 84px;
+position: relative;
+z-index: 2;
+}
+
+.card {
+width: 95%;
+max-width: 500px;
+background: var(--card-bg);
+border-radius: 26px;
+padding: 24px 18px;
+text-align: center;
+box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+position: relative;
+z-index: 2;
+border: 1px solid rgba(255,255,255,0.5);
+}
+
+.logo-wrap {
+position: relative;
+width: 170px;
+height: 74px;
+margin: 0 auto 6px;
+overflow: visible;
+}
+
+.logo {
+width: 126px;
+position: absolute;
+left: 22px;
+top: 6px;
+animation: logoFloat 3.5s ease-in-out infinite;
+transform-origin: center;
+}
+
+@keyframes logoFloat {
+0%, 100% { transform: translateY(0px) rotate(0deg); }
+50% { transform: translateY(-6px) rotate(1deg); }
+}
+
+h1 {
+margin: 0 0 6px;
+font-size: 30px;
+line-height: 1.08;
+color: var(--text);
+}
+
+.subtitle {
+margin: 0 0 12px;
+color: var(--muted);
+font-size: 13px;
+}
+
+.stats,
+.countdown-box {
+display: grid;
+gap: 8px;
+margin-bottom: 10px;
+}
+
+.stats {
+grid-template-columns: repeat(3, 1fr);
+}
+
+.countdown-box {
+grid-template-columns: repeat(4, 1fr);
+margin-bottom: 12px;
+}
+
+.stat-box,
+.count-item {
+background: rgba(255,255,255,0.64);
+border: 1px solid var(--border-soft);
+border-radius: 14px;
+padding: 10px 6px;
+}
+
+.stat-num,
+.count-num {
+font-size: 18px;
+font-weight: 700;
+color: var(--primary-dark);
+}
+
+.stat-label,
+.count-label {
+font-size: 11px;
+color: var(--muted);
+margin-top: 2px;
+}
+
+.event {
+background: rgba(255,255,255,0.62);
+border: 1px solid var(--border-soft);
+border-radius: 16px;
+padding: 12px;
+text-align: left;
+margin-bottom: 10px;
+font-size: 13px;
+line-height: 1.55;
+}
+
+.event b {
+color: var(--primary-dark);
+display: block;
+margin-bottom: 6px;
+font-size: 14px;
+}
+
+.extra-field-row {
+margin-bottom: 8px;
+line-height: 1.5;
+word-break: break-word;
+}
+
+.extra-field-row a {
+color: var(--primary-dark);
+font-weight: 700;
+text-decoration: none;
+display: inline-flex;
+align-items: center;
+gap: 6px;
+}
+
+.extra-field-row a:hover {
+text-decoration: underline;
+}
+
+input {
+width: 100%;
+padding: 12px;
+margin: 6px 0;
+border-radius: 12px;
+border: 1px solid #d7d8df;
+font-size: 14px;
+outline: none;
+background: #fff;
+color: var(--text);
+}
+
+input:focus {
+border-color: rgba(217,61,90,0.35);
+box-shadow: 0 0 0 3px rgba(217,61,90,0.08);
+}
+
+button {
+width: 100%;
+padding: 12px;
+border: none;
+border-radius: 12px;
+background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+color: white;
+font-size: 14px;
+font-weight: bold;
+cursor: pointer;
+margin-top: 6px;
+box-shadow: 0 10px 22px rgba(217,61,90,0.18);
+transition: transform 0.18s ease;
+}
+
+button:hover {
+transform: translateY(-1px);
+}
+
+button:disabled {
+opacity: 0.7;
+cursor: not-allowed;
+}
+
+#cancelBtn {
+background: var(--dark-btn);
+box-shadow: 0 10px 18px rgba(70,70,78,0.18);
+}
+
+.msg {
+margin-top: 8px;
+display: none;
+font-weight: 700;
+font-size: 12px;
+}
+
+.success { color: var(--success); }
+.error { color: var(--error); }
+
+.cancel-title {
+margin-top: 12px;
+font-size: 12px;
+color: #555;
+}
+
+#musicBtn {
+position: fixed;
+right: 10px;
+bottom: 10px;
+width: auto;
+min-width: 110px;
+padding: 10px 12px;
+border-radius: 14px;
+z-index: 10;
+font-size: 12px;
+}
+
+.live-popup {
+position: fixed;
+left: 50%;
+bottom: 62px;
+transform: translateX(-50%);
+background: linear-gradient(135deg, var(--primary-dark), #ff8090);
+color: white;
+padding: 10px 14px;
+border-radius: 14px;
+font-size: 12px;
+font-weight: 700;
+z-index: 9999;
+opacity: 0;
+animation: popupInOut 2.8s ease forwards;
+box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+}
+
+@keyframes popupInOut {
+0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+100% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+}
+
+.schedule-line {
+background: rgba(255,255,255,0.62);
+border: 1px solid var(--border-soft);
+border-radius: 12px;
+padding: 8px 10px;
+margin-bottom: 8px;
+}
+
+.schedule-time {
+font-weight: 700;
+color: var(--primary-dark);
+display: block;
+margin-bottom: 2px;
+}
+
+.schedule-text {
+color: #333;
+}
+
+.modal-overlay {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.55);
+z-index: 99999;
+justify-content: center;
+align-items: center;
+padding: 16px;
+}
+
+.modal-box {
+background: white;
+width: 100%;
+max-width: 390px;
+border-radius: 20px;
+padding: 18px;
+box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+text-align: left;
+max-height: 80vh;
+overflow: auto;
+}
+
+@media (max-width: 480px) {
+.card { width: 96%; padding: 16px 14px; }
+h1 { font-size: 26px; }
+.stat-num, .count-num { font-size: 16px; }
+.stat-label, .count-label { font-size: 10px; }
+}
+.map-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  margin-top: 6px;
+  border-radius: 12px;
+  border: 1px solid rgba(217, 61, 90, 0.22);
+  background: linear-gradient(135deg, rgba(217,61,90,0.10), rgba(255,136,152,0.14));
+  color: #d93d5a;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 6px 14px rgba(217,61,90,0.10);
+  transition: all 0.18s ease;
+}
+
+.map-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(217,61,90,0.16);
+}
+</style>
+</head>
+<body>
+
+<div class="money-rain" id="moneyRain"></div>
+
+<div class="page-wrap">
+<div class="card">
+<div class="logo-wrap">
+<img src="farmasi.png" class="logo" alt="Farmasi Logo" onerror="this.style.display='none'; this.parentElement.style.height='0px';">
+</div>
+
+<h1>ტრენინგზე რეგისტრაცია</h1>
+<div class="subtitle">შეავსე ფორმა და დაადასტურე მონაწილეობა</div>
+
+<div class="stats">
+<div class="stat-box">
+<div class="stat-num" id="totalCount">0</div>
+<div class="stat-label">სულ</div>
+</div>
+<div class="stat-box">
+<div class="stat-num" id="todayCount">0</div>
+<div class="stat-label">დღეს</div>
+</div>
+<div class="stat-box">
+<div class="stat-num" id="spotsLeft">-</div>
+<div class="stat-label">დარჩა</div>
+</div>
+</div>
+
+<div class="countdown-box">
+<div class="count-item">
+<div id="cdDays" class="count-num">0</div>
+<div class="count-label">დღე</div>
+</div>
+<div class="count-item">
+<div id="cdHours" class="count-num">0</div>
+<div class="count-label">საათი</div>
+</div>
+<div class="count-item">
+<div id="cdMinutes" class="count-num">0</div>
+<div class="count-label">წუთი</div>
+</div>
+<div class="count-item">
+<div id="cdSeconds" class="count-num">0</div>
+<div class="count-label">წამი</div>
+</div>
+</div>
+
+<button type="button" onclick="openSchedule()">📋 სრული პროგრამა</button>
+
+<div class="event">
+<b>📍 ღონისძიების დეტალები</b>
+<div id="eventCity">📍 ქალაქი: იტვირთება...</div>
+<div id="eventDate">📅 თარიღი: ...</div>
+<div id="eventTime">🕒 დრო: ...</div>
+<div id="eventLocation">🏢 ლოკაცია: ...</div>
+</div>
+
+<div id="extraFields" class="event" style="display:none;">
+<b>ℹ️ დამატებითი ინფორმაცია</b>
+<div id="extraFieldsContent"></div>
+</div>
+
+<form id="registerForm">
+<input id="first_name" name="first_name" placeholder="სახელი" required />
+<input id="last_name" name="last_name" placeholder="გვარი" required />
+<input id="phone" name="phone" placeholder="ტელეფონი (599123456)" required />
+<button id="registerBtn" type="submit">დარეგისტრირება</button>
+</form>
+
+<div id="success" class="msg success"></div>
+<div id="error" class="msg error"></div>
+
+<div class="cancel-title">❗ ვერ მოდიხარ? გააუქმე რეგისტრაცია</div>
+
+<form id="cancelForm">
+<input id="cancel_phone" name="phone" placeholder="ტელეფონი" required />
+<button id="cancelBtn" type="submit">გაუქმება</button>
+</form>
+
+<div id="cancelMsg" class="msg"></div>
+</div>
+</div>
+
+<div id="scheduleModal" class="modal-overlay">
+<div class="modal-box">
+<div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+<h3 style="margin:0; color:var(--primary-dark); font-size:18px;">📋 სრული პროგრამა</h3>
+<button
+type="button"
+onclick="closeSchedule()"
+style="width:auto; min-width:auto; margin:0; padding:6px 10px; border-radius:10px; background:#e9e9e9; color:#333; box-shadow:none;"
+>✕</button>
+</div>
+<div id="scheduleContent" style="margin-top:14px; line-height:1.7; font-size:14px; color:#333;">იტვირთება...</div>
+</div>
+</div>
+
+<audio id="bgMusic" loop preload="auto">
+<source src="music.mp3" type="audio/mpeg" />
+</audio>
+
+<button type="button" onclick="toggleMusic()" id="musicBtn">🔊 მუსიკა</button>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbwBSg7a-ioLmP7SscNmxYvJV-gkqfjpWRSRvd71JLTd-ftUXDwP8mWp9qfyjJOJKYdo/exec";
+
+const registerForm = document.getElementById("registerForm");
+const cancelForm = document.getElementById("cancelForm");
+const registerBtn = document.getElementById("registerBtn");
+const successBox = document.getElementById("success");
+const errorBox = document.getElementById("error");
+const cancelMsg = document.getElementById("cancelMsg");
+
+let countdownInterval = null;
+
+function updateMusicButton() {
+const music = document.getElementById("bgMusic");
+const musicBtn = document.getElementById("musicBtn");
+if (!music || !musicBtn) return;
+musicBtn.innerText = music.paused ? "🔊 მუსიკა" : "🔇 გამორთვა";
+}
+
+async function startMusic() {
+const music = document.getElementById("bgMusic");
+if (!music) return;
+try { await music.play(); } catch (e) {}
+updateMusicButton();
+}
+
+function setupFirstInteractionMusic() {
+async function unlockMusic() {
+await startMusic();
+document.removeEventListener("click", unlockMusic);
+document.removeEventListener("touchstart", unlockMusic);
+document.removeEventListener("keydown", unlockMusic);
+}
+
+document.addEventListener("click", unlockMusic, { once: true });
+document.addEventListener("touchstart", unlockMusic, { once: true });
+document.addEventListener("keydown", unlockMusic, { once: true });
+}
+
+function toggleMusic() {
+const music = document.getElementById("bgMusic");
+if (!music) return;
+
+if (music.paused) {
+music.play().then(updateMusicButton).catch(updateMusicButton);
+} else {
+music.pause();
+updateMusicButton();
+}
+}
+
+function startCountdown(dateStr, timeStr) {
+if (countdownInterval) clearInterval(countdownInterval);
+if (!dateStr || !timeStr) return;
+
+const target = new Date(dateStr + "T" + timeStr + ":00");
+if (isNaN(target.getTime())) return;
+
+function updateCountdown() {
+const now = new Date();
+const diff = target - now;
+
+if (diff <= 0) {
+document.getElementById("cdDays").innerText = "0";
+document.getElementById("cdHours").innerText = "0";
+document.getElementById("cdMinutes").innerText = "0";
+document.getElementById("cdSeconds").innerText = "0";
+clearInterval(countdownInterval);
+return;
+}
+
+document.getElementById("cdDays").innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+document.getElementById("cdHours").innerText = Math.floor((diff / (1000 * 60 * 60)) % 24);
+document.getElementById("cdMinutes").innerText = Math.floor((diff / (1000 * 60)) % 60);
+document.getElementById("cdSeconds").innerText = Math.floor((diff / 1000) % 60);
+}
+
+updateCountdown();
+countdownInterval = setInterval(updateCountdown, 1000);
+}
+
+function openSchedule() {
+document.getElementById("scheduleModal").style.display = "flex";
+}
+
+function closeSchedule() {
+document.getElementById("scheduleModal").style.display = "none";
+}
+
+function renderSchedule(text) {
+if (!text) return "განრიგი ჯერ არ არის დამატებული";
+
+return text.split("\n").map(function(line) {
+line = line.trim();
+if (!line) return "";
+
+const parts = line.split(" - ");
+if (parts.length >= 2) {
+const time = parts.shift();
+const desc = parts.join(" - ");
+return '<div class="schedule-line"><span class="schedule-time">' + time + '</span><div class="schedule-text">' + desc + '</div></div>';
+}
+
+return '<div class="schedule-line"><div class="schedule-text">' + line + '</div></div>';
+}).join("");
+}
+
+function prettifyKey(key) {
+const labels = {
+hotel_location: "🏨 სასტუმროს ლოკაცია",
+hotel_name: "🏨 სასტუმრო",
+hotel_link: "🔗 სასტუმროს ბმული",
+map_link: "🗺️ რუკა",
+speaker: "🎤 სპიკერი",
+speaker_name: "🎤 სპიკერი",
+price: "💳 ფასი",
+dress_code: "👗 Dress code",
+gift: "🎁 საჩუქარი"
+};
+
+return labels[key] || key.replace(/_/g, " ");
+}
+
+function renderExtraFields(config) {
+  const extraBox = document.getElementById("extraFields");
+  const extraContent = document.getElementById("extraFieldsContent");
+  if (!extraBox || !extraContent) return;
+
+  const hiddenKeys = {
+    max_registrations: true,
+    registration_status: true,
+    event_city: true,
+    event_date: true,
+    event_time: true,
+    event_location: true,
+    admin_phones: true,
+    admin_chat_ids: true,
+    schedule: true
+  };
+
+  function normalizeKey(key) {
+    return String(key || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "_");
+  }
+
+  let html = "";
+
+  Object.keys(config || {}).forEach(function(key) {
+    const normKey = normalizeKey(key);
+    const value = String(config[key] || "").trim();
+    if (!value) return;
+    if (hiddenKeys[normKey]) return;
+
+    if (
+      (normKey === "hotel_location" || normKey.includes("hotel")) &&
+      value.startsWith("http")
+    ) {
+      html += `
+        <div class="extra-field-row">
+          <b>🏨 სასტუმროს ლოკაცია:</b><br>
+          <a class="map-button" href="${value}" target="_blank" rel="noopener noreferrer">
+            📍 რუკაზე ნახვა
+          </a>
+        </div>
+      `;
+      return;
+    }
+
+    if (normKey === "price") {
+      html += `
+        <div class="extra-field-row">
+          <b>💳 ფასი:</b><br>${value}
+        </div>
+      `;
+      return;
+    }
+
+    html += `
+      <div class="extra-field-row">
+        <b>${key}:</b><br>${value}
+      </div>
+    `;
+  });
+
+  if (html) {
+    extraContent.innerHTML = html;
+    extraBox.style.display = "block";
+  } else {
+    extraContent.innerHTML = "";
+    extraBox.style.display = "none";
+  }
+}function successExplosion() {
+for (let i = 0; i < 10; i++) {
+const img = document.createElement("img");
+img.src = i % 2 === 0 ? "gel100.png" : "usd100.png";
+img.style.position = "fixed";
+img.style.left = "50%";
+img.style.top = "50%";
+img.style.width = "64px";
+img.style.zIndex = "99999";
+img.style.pointerEvents = "none";
+document.body.appendChild(img);
+
+const x = (Math.random() - 0.5) * 420;
+const y = (Math.random() - 0.5) * 320;
+
+img.animate(
+[
+{ transform: "translate(-50%, -50%) scale(1)", opacity: 1 },
+{ transform: "translate(" + x + "px, " + y + "px) scale(0.7)", opacity: 0 }
+],
+{ duration: 800, easing: "ease-out" }
+);
+
+setTimeout(function() { img.remove(); }, 800);
+}
+}
+
+function showLivePopup() {
+const names = ["ნინო", "მარი", "ლალი", "შორენა", "მადონა", "ნატო", "ევა", "თამარი", "გიორგი", "ანა", "ლაშა", "სალომე"];
+const cities = ["თბილისი", "ბათუმი", "ფოთი", "წნორი", "გორი", "გურჯაანი", "ქუთაისი", "რუსთავი", "ზუგდიდი"];
+
+const name = names[Math.floor(Math.random() * names.length)];
+const city = cities[Math.floor(Math.random() * cities.length)];
+
+const popup = document.createElement("div");
+popup.className = "live-popup";
+popup.innerText = "🔥 " + name + " • " + city + " • ახლახანს დარეგისტრირდა";
+
+document.body.appendChild(popup);
+setTimeout(function() { popup.remove(); }, 2800);
+}
+
+function handleLoadData(data) {
+if (!data || !data.ok) {
+document.getElementById("eventCity").innerText = "❌ ვერ ჩაიტვირთა";
+document.getElementById("eventDate").innerText = "📅 თარიღი: ---";
+document.getElementById("eventTime").innerText = "🕒 დრო: ---";
+document.getElementById("eventLocation").innerText = "🏢 ლოკაცია: ---";
+document.getElementById("scheduleContent").innerHTML = "განრიგი ვერ ჩაიტვირთა";
+return;
+}
+
+const cfg = data.config || {};
+
+document.getElementById("eventCity").innerText = "📍 ქალაქი: " + (cfg.event_city || "-");
+document.getElementById("eventDate").innerText = "📅 თარიღი: " + (cfg.event_date || "-");
+document.getElementById("eventTime").innerText = "🕒 დრო: " + (cfg.event_time || "-");
+document.getElementById("eventLocation").innerText = "🏢 ლოკაცია: " + (cfg.event_location || "-");
+
+document.getElementById("totalCount").innerText = data.totalRegistrations || 0;
+document.getElementById("todayCount").innerText = data.todayRegistrations || 0;
+document.getElementById("spotsLeft").innerText = data.spotsLeft === null ? "∞" : data.spotsLeft;
+
+document.getElementById("scheduleContent").innerHTML = renderSchedule(cfg.schedule || "");
+renderExtraFields(cfg);
+startCountdown(cfg.event_date, cfg.event_time);
+}
+
+async function loadEvent() {
+try {
+const res = await fetch(API_URL + "?t=" + Date.now());
+const data = await res.json();
+handleLoadData(data);
+} catch (err) {
+console.error(err);
+}
+}
+
+registerForm.addEventListener("submit", async function(e) {
+e.preventDefault();
+
+successBox.style.display = "none";
+errorBox.style.display = "none";
+
+const firstName = document.getElementById("first_name").value.trim();
+const lastName = document.getElementById("last_name").value.trim();
+const phone = document.getElementById("phone").value.trim();
+
+if (!firstName || !lastName || !phone) {
+errorBox.innerText = "შეავსე ყველა ველი ❌";
+errorBox.style.display = "block";
+return;
+}
+
+registerBtn.disabled = true;
+registerBtn.innerText = "იგზავნება...";
+
+const formData = new URLSearchParams();
+formData.append("first_name", firstName);
+formData.append("last_name", lastName);
+formData.append("phone", phone);
+
+try {
+const res = await fetch(API_URL, {
+method: "POST",
+body: formData
+});
+
+const text = (await res.text()).trim();
+console.log("REGISTER RESPONSE:", text);
+
+if (text === "success") {
+registerForm.reset();
+successBox.innerText = "რეგისტრაცია წარმატებულია ✅";
+successBox.style.display = "block";
+successExplosion();
+setTimeout(loadEvent, 800);
+} else if (text === "duplicate") {
+errorBox.innerText = "ეს ნომერი უკვე დარეგისტრირებულია ❌";
+errorBox.style.display = "block";
+} else if (text === "full") {
+errorBox.innerText = "ადგილები აღარ არის ❌";
+errorBox.style.display = "block";
+} else if (text === "closed") {
+errorBox.innerText = "რეგისტრაცია დახურულია ❌";
+errorBox.style.display = "block";
+} else if (text === "invalid") {
+errorBox.innerText = "ტელეფონი არასწორია ❌";
+errorBox.style.display = "block";
+} else {
+errorBox.innerText = "შეცდომა, სცადე თავიდან ❌";
+errorBox.style.display = "block";
+}
+} catch (err) {
+console.error(err);
+errorBox.innerText = "კავშირის შეცდომა ❌";
+errorBox.style.display = "block";
+}
+
+registerBtn.disabled = false;
+registerBtn.innerText = "დარეგისტრირება";
+});
+
+cancelForm.addEventListener("submit", async function(e) {
+e.preventDefault();
+
+cancelMsg.style.display = "none";
+
+const phone = document.getElementById("cancel_phone").value.trim();
+if (!phone) {
+cancelMsg.innerText = "შეიყვანე ტელეფონი ❌";
+cancelMsg.style.color = "red";
+cancelMsg.style.display = "block";
+return;
+}
+
+const formData = new URLSearchParams();
+formData.append("action", "cancel");
+formData.append("phone", phone);
+
+try {
+const res = await fetch(API_URL, {
+method: "POST",
+body: formData
+});
+
+const text = (await res.text()).trim();
+console.log("CANCEL RESPONSE:", text);
+
+if (text === "cancelled") {
+cancelMsg.innerText = "რეგისტრაცია გაუქმებულია ✅";
+cancelMsg.style.color = "green";
+cancelForm.reset();
+setTimeout(loadEvent, 500);
+} else if (text === "notfound") {
+cancelMsg.innerText = "ნომერი ვერ მოიძებნა ❌";
+cancelMsg.style.color = "red";
+} else if (text === "invalid") {
+cancelMsg.innerText = "ტელეფონი არასწორია ❌";
+cancelMsg.style.color = "red";
+} else {
+cancelMsg.innerText = "შეცდომა ❌";
+cancelMsg.style.color = "red";
+}
+
+cancelMsg.style.display = "block";
+} catch (err) {
+console.error(err);
+cancelMsg.innerText = "კავშირის შეცდომა ❌";
+cancelMsg.style.color = "red";
+cancelMsg.style.display = "block";
+}
+});
+
+const moneyContainer = document.getElementById("moneyRain");
+const moneyImages = ["gel100.png", "gel200.png", "usd100.png"];
+
+if (moneyContainer) {
+for (let i = 0; i < 55; i++) {
+const img = document.createElement("img");
+img.src = moneyImages[Math.floor(Math.random() * moneyImages.length)];
+img.className = "note";
+img.style.left = Math.random() * 100 + "%";
+img.style.animationDuration = (8 + Math.random() * 7) + "s";
+img.style.animationDelay = Math.random() * 6 + "s";
+img.style.width = (52 + Math.random() * 32) + "px";
+moneyContainer.appendChild(img);
+}
+}
+
+updateMusicButton();
+setupFirstInteractionMusic();
+loadEvent();
+setInterval(loadEvent, 5000);
+setInterval(showLivePopup, 12000);
+</script>
+</body>
+</html>
